@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1f6b75">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ضغط الدم">
+<link rel="apple-touch-icon" href="icon.png">
+<title>سجل ضغط الدم</title>
+<style>
+html,body{margin:0;height:100%}
+body{display:grid;place-items:center;background:linear-gradient(135deg,#1f6b75,#223a58 60%,#25304f);color:#fff;font:600 22px/1.5 -apple-system,system-ui,sans-serif;text-align:center;padding:24px;box-sizing:border-box}
+a{color:#9fe3dc}
+</style>
+</head>
+<body>
+<div><img src="icon.png" width="96" height="96" alt="" style="border-radius:22px;display:block;margin:0 auto 14px"><div id="m">جارٍ فتح السجل…</div></div>
+<script>
+/* نقطة الدخول الثابتة: تفتح آخر نسخة من التطبيق، وتجدد دخول Google بصمت */
+(function(){
+  var R='MOON20202020/alwan-updates';
+  var START='https://raw.githack.com/'+R+'/main/bp/start.html';
+  var h=new URLSearchParams(location.hash.slice(1));
+  function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}}
+  function fail(){document.getElementById('m').innerHTML='تعذّر الاتصال. تحقق من الإنترنت ثم <a href="'+START+'">أعد المحاولة</a>.'}
+  function latest(){
+    return fetch('https://api.github.com/repos/'+R+'/commits/main',{cache:'no-store'})
+      .then(function(r){return r.ok?r.json():null}).then(function(j){if(j&&j.sha){ls('bp-sha',j.sha);return j.sha}return ls('bp-sha')})
+      .catch(function(){return ls('bp-sha')});
+  }
+  function app(sha,hash){location.replace('https://raw.githack.com/'+R+'/'+(sha||'main')+'/bp/index.html'+(hash?'#'+hash:''))}
+
+  // 1) عائد من Google
+  if(h.get('access_token')||h.get('error')){
+    var st=h.get('state')||'',ok=false;
+    try{ok=st&&st===sessionStorage.getItem('bp-state')}catch(e){}
+    latest().then(function(sha){
+      if(h.get('access_token')&&ok){app(sha,'gt='+encodeURIComponent(h.get('access_token'))+'&exp='+(Date.now()+(+h.get('expires_in')||3600)*1000))}
+      else app(sha,'gerr='+encodeURIComponent(h.get('error')||'state'));
+    });
+    return;
+  }
+  // 2) دخول عادي
+  latest().then(function(sha){
+    if(!sha){fail();return}
+    var who=ls('bp-google');
+    if(!who&&!h.get('login')){app(sha);return}
+    fetch('https://raw.githack.com/'+R+'/'+sha+'/bp/config.json',{cache:'no-store'}).then(function(r){return r.json()}).then(function(c){
+      if(!c||!c.clientId){app(sha);return}
+      var state=Math.random().toString(36).slice(2)+Date.now().toString(36);
+      try{sessionStorage.setItem('bp-state',state)}catch(e){}
+      var p=new URLSearchParams({client_id:c.clientId,redirect_uri:START,response_type:'token',
+        scope:'openid email https://www.googleapis.com/auth/drive.appdata',include_granted_scopes:'true',state:state});
+      if(h.get('login')){p.set('prompt','select_account')}else{p.set('prompt','none');p.set('login_hint',who)}
+      location.replace('https://accounts.google.com/o/oauth2/v2/auth?'+p.toString());
+    }).catch(function(){app(sha)});
+  });
+})();
+</script>
+</body>
+</html>

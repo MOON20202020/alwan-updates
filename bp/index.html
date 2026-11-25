@@ -132,6 +132,12 @@ summary{font-size:21px}
 @media(max-width:600px){table{font-size:19px}.stack td{padding-inline-start:6.5em}.stack td::before{font-size:17px;width:6em;margin-inline-start:-6.5em}.stack td.num{font-size:24px}}
 .big label{white-space:normal}
 .grid{align-items:end}
+.gbtn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;background:light-dark(#fff,#0f182b);color:var(--ink);border:2px solid var(--line);font-weight:700}
+.gdot{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:conic-gradient(#ea4335 0 25%,#fbbc05 0 50%,#34a853 0 75%,#4285f4 0);color:#fff;font:800 17px/1 Arial,sans-serif}
+.gacc{display:flex;align-items:center;gap:14px}
+.gav{flex:none;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#1f6b75,#223a58);color:#fff;font-size:24px;font-weight:800}
+#gMail{display:block;overflow-wrap:anywhere;direction:ltr;text-align:right}
+.top .gchip{display:inline-block;margin-top:6px;font-size:15px;color:#d6eef0}
 #chart{direction:ltr}
 
 /* ===== التصميم الجديد: بطاقة متابعة بألوان السجل المطبوع ===== */
@@ -189,7 +195,7 @@ h1,h2{font-weight:700}
  if(location.hostname!=='raw.githack.com')return;
  var R='MOON20202020/alwan-updates',m=location.pathname.split('/'),cur=m[3]||'';
  fetch('https://api.github.com/repos/'+R+'/commits/main',{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(j){
-  if(j&&j.sha&&j.sha!==cur){location.replace('https://raw.githack.com/'+R+'/'+j.sha+'/bp/index.html')}
+  if(j&&j.sha&&j.sha!==cur){location.replace('https://raw.githack.com/'+R+'/'+j.sha+'/bp/index.html'+location.hash)}
  }).catch(function(){});
 }catch(e){}})();
 </script>
@@ -237,6 +243,18 @@ h1,h2{font-weight:700}
     <div id="tableBox"></div>
   </section>
 
+  <section class="card" id="gcard" hidden>
+    <h2>حساب Google</h2>
+    <div id="gOut">
+      <p class="note" style="margin:0 0 14px">سجّل الدخول بحسابك في Google، وتُحفظ قراءاتك واسمك في حسابك بشكل دائم وتظهر لك من أي جهاز. لا يراها أحد غيرك.</p>
+      <button type="button" id="gIn" class="gbtn"><span class="gdot" aria-hidden="true">G</span>تسجيل الدخول بحساب Google</button>
+    </div>
+    <div id="gOn" hidden>
+      <div class="gacc"><span class="gav" id="gAv"></span><div><b id="gMail"></b><div class="note" id="gSync"></div></div></div>
+      <div class="row" style="margin-top:14px"><button type="button" id="gNow" style="flex:1 1 180px">🔄 مزامنة الآن</button><button type="button" id="gOutBtn" class="del" style="flex:0 1 auto;min-height:60px">تسجيل الخروج</button></div>
+    </div>
+  </section>
+
   <section class="card" id="bk">
     <h2>الحفظ الدائم</h2>
     <p class="note" id="bkState" style="margin:0 0 6px"></p>
@@ -262,6 +280,7 @@ h1,h2{font-weight:700}
   <p>اكتب اسمك مرة واحدة ليظهر في تقريرك المطبوع. قراءاتك تُحفظ على جهازك فقط ولا يراها غيرك.</p>
   <input id="wname" type="text" name="name" autocomplete="name" maxlength="60" required placeholder="الاسم الكامل">
   <button class="pri" type="submit">ابدأ</button>
+  <button type="button" class="gbtn" id="wGoogle" hidden style="margin-top:12px"><span class="gdot" aria-hidden="true">G</span>أو ادخل بحساب Google</button>
   <button type="button" class="link" id="wRestore" style="margin-top:12px;width:100%;min-height:44px">عندك نسخة احتياطية؟ استرجعها</button>
 </form></div>
 <div id="pdlg" role="dialog" aria-modal="true" aria-labelledby="pdh"><form id="pform">
@@ -302,6 +321,7 @@ function save(){
   try{localStorage.setItem('bp-log',JSON.stringify(state))}catch(e){canStore=false}
 
   render();
+  if(typeof gQueue==='function')gQueue();
 }
 
 function nowLocal(){const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16)}
@@ -512,7 +532,7 @@ $('form').addEventListener('submit',e=>{
 });
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-del]');
-  if(b){state.readings=state.readings.filter(x=>x.id!==b.dataset.del);save()}
+  if(b){state.readings=state.readings.filter(x=>x.id!==b.dataset.del);(state.deleted=state.deleted||[]).push(b.dataset.del);save()}
 });
 const iso=d=>{const x=new Date(d);x.setMinutes(x.getMinutes()-x.getTimezoneOffset());return x.toISOString().slice(0,10)};
 function preset(n){
@@ -559,10 +579,99 @@ $('pform').addEventListener('submit',e=>{e.preventDefault();if($('from').value&&
   closePrint();doPrint()});
 $('addBtn').addEventListener('click',()=>{$('form').scrollIntoView({behavior:'smooth'});setTimeout(()=>$('sys').focus({preventScroll:true}),350)});
 const openWelcome=()=>{$('wimg').src=IMG;$('wname').value=state.name||'';$('welcome').classList.add('on');setTimeout(()=>$('wname').focus(),200)};
-$('wform').addEventListener('submit',e=>{e.preventDefault();const n=$('wname').value.trim();if(!n)return;state.name=n;$('welcome').classList.remove('on');save()});
+$('wform').addEventListener('submit',e=>{e.preventDefault();const n=$('wname').value.trim();if(!n)return;state.name=n;state.nameAt=Date.now();$('welcome').classList.remove('on');save()});
 $('editName').addEventListener('click',openWelcome);
-if(!state.name)openWelcome();
+/* ===== تسجيل الدخول بحساب Google والمزامنة مع Google Drive (مجلد التطبيق الخاص) ===== */
+const START='https://raw.githack.com/MOON20202020/alwan-updates/main/bp/start.html';
+let gTok=null,gExp=0,gClient='',gBusy=false,gAgain=false,gT=0,gFile=null;
+const lsg=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}};
+(function(){const h=new URLSearchParams(location.hash.slice(1));
+  if(h.get('gt')){gTok=h.get('gt');gExp=+h.get('exp')||Date.now()+3500e3}
+  if(h.get('gerr')){try{sessionStorage.setItem('bp-gerr','1')}catch(e){}}
+  if(h.get('gt')||h.get('gerr'))history.replaceState(null,'',location.pathname+location.search);
+})();
+const gOk=()=>gTok&&Date.now()<gExp-60e3;
+function gLogin(){location.href=START+'#login=1'}
+function gUI(msg,bad){
+  const who=lsg('bp-google');
+  $('gcard').hidden=!gClient;$('wGoogle').hidden=!gClient||!!who;
+  $('gOut').hidden=!!who;$('gOn').hidden=!who;
+  if(who){$('gMail').textContent=who;$('gAv').textContent=(state.name||who).trim().charAt(0).toUpperCase()}
+  if(msg!==undefined){$('gSync').textContent=msg;$('gSync').style.color=bad?'var(--red)':''}
+  let chip=document.querySelector('.top .gchip');
+  if(who){if(!chip){chip=document.createElement('span');chip.className='gchip';$('hello').parentNode.appendChild(chip)}chip.textContent=gOk()?'☁️ محفوظ في حساب Google':'☁️ حساب Google'}else if(chip)chip.remove();
+}
+async function gApi(url,opt={}){
+  opt.headers=Object.assign({Authorization:'Bearer '+gTok},opt.headers||{});
+  const r=await fetch(url,opt);
+  if(r.status===401){gTok=null;throw Object.assign(new Error('auth'),{auth:true})}
+  if(!r.ok)throw new Error('http '+r.status);
+  return r;
+}
+function gMerge(a,b){
+  if(!b)return a;
+  const del=new Set([...(a.deleted||[]),...(b.deleted||[])].map(String));
+  const map=new Map();
+  for(const x of [...(b.readings||[]),...(a.readings||[])])if(x&&x.id&&!del.has(String(x.id)))map.set(String(x.id),x);
+  const out=Object.assign({},a);
+  out.readings=[...map.values()];
+  out.deleted=[...del].slice(-3000);
+  if((b.nameAt||0)>(a.nameAt||0)&&b.name){out.name=b.name;out.nameAt=b.nameAt}
+  if(!out.name&&b.name)out.name=b.name;
+  return out;
+}
+async function gSyncNow(){
+  if(!gOk()){gUI(lsg('bp-google')?'انتهت الجلسة — اضغط «مزامنة الآن».':'',true);return}
+  if(gBusy){gAgain=true;return}
+  gBusy=true;gUI('جارٍ المزامنة…');
+  try{
+    if(!gFile){
+      const q=encodeURIComponent("name='bp-log.json'");
+      const l=await (await gApi('https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&fields=files(id)&q='+q)).json();
+      gFile=l.files&&l.files[0]?l.files[0].id:null;
+    }
+    let remote=null;
+    if(gFile)remote=await (await gApi('https://www.googleapis.com/drive/v3/files/'+gFile+'?alt=media')).json().catch(()=>null);
+    const merged=gMerge(state,remote);
+    const body=JSON.stringify({app:'bp-log',v:2,name:merged.name||'',nameAt:merged.nameAt||0,readings:merged.readings,deleted:merged.deleted||[]});
+    if(!gFile){
+      const fd=new FormData();
+      fd.append('metadata',new Blob([JSON.stringify({name:'bp-log.json',parents:['appDataFolder']})],{type:'application/json'}));
+      fd.append('file',new Blob([body],{type:'application/json'}));
+      const c=await (await gApi('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',body:fd})).json();
+      gFile=c.id;
+    }else if(!remote||JSON.stringify({n:remote.name,r:remote.readings,d:remote.deleted})!==JSON.stringify({n:merged.name||'',r:merged.readings,d:merged.deleted||[]})){
+      await gApi('https://www.googleapis.com/upload/drive/v3/files/'+gFile+'?uploadType=media',{method:'PATCH',headers:{'Content-Type':'application/json'},body});
+    }
+    const before=JSON.stringify(state.readings)+state.name;
+    Object.assign(state,{name:merged.name,nameAt:merged.nameAt,readings:merged.readings,deleted:merged.deleted});
+    try{localStorage.setItem('bp-log',JSON.stringify(state))}catch(e){}
+    if(before!==JSON.stringify(state.readings)+state.name){render();if(state.name)$('welcome').classList.remove('on')}
+    if(!state.name)openWelcome();
+    const t=new Date();gUI('✓ تمت المزامنة '+t.toLocaleTimeString('ar-OM-u-nu-latn',{hour:'numeric',minute:'2-digit'}));
+  }catch(e){gUI(e.auth?'انتهت الجلسة — اضغط «مزامنة الآن».':'تعذّرت المزامنة — تحقق من الإنترنت.',true)}
+  finally{gBusy=false;if(gAgain){gAgain=false;gQueue()}}
+}
+function gQueue(){if(!gOk())return gUI();clearTimeout(gT);gT=setTimeout(gSyncNow,600)}
+async function gStart(){
+  try{const c=await (await fetch('config.json',{cache:'no-store'})).json();gClient=(c&&c.clientId)||''}catch(e){gClient=''}
+  if(!gClient){gUI();return}
+  if(gTok){
+    try{const u=await (await gApi('https://www.googleapis.com/oauth2/v3/userinfo')).json();if(u&&u.email)lsg('bp-google',u.email)}catch(e){}
+    try{sessionStorage.removeItem('bp-gerr')}catch(e){}
+    gUI();gSyncNow();return;
+  }
+  let tried=false;try{tried=sessionStorage.getItem('bp-gerr')==='1'}catch(e){}
+  if(lsg('bp-google')&&!tried&&location.hostname==='raw.githack.com'){location.replace(START);return}
+  gUI(lsg('bp-google')?'سجّل الدخول من جديد للمزامنة.':'',true);
+}
+$('gIn').addEventListener('click',gLogin);
+$('wGoogle').addEventListener('click',gLogin);
+$('gNow').addEventListener('click',()=>{if(gOk())gSyncNow();else{try{sessionStorage.removeItem('bp-gerr')}catch(e){}location.href=START}});
+$('gOutBtn').addEventListener('click',()=>{lsg('bp-google',null);gTok=null;gFile=null;gUI();note('تم تسجيل الخروج. قراءاتك باقية على هذا الجهاز.')});
+if(!state.name&&!gTok)openWelcome();
 render();
+gStart();
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
 if(window.claude&&claude.use){
   claude.use('downloads').then(d=>{dl=d}).catch(()=>{});
