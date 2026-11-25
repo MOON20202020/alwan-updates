@@ -58,7 +58,7 @@ h2{font:700 20px/1.3 "Readex Pro",sans-serif;margin:0 0 14px}
 .top{display:flex;gap:12px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;border-bottom:3px solid var(--red);padding-bottom:16px;margin-bottom:24px}
 .card{background:var(--card);border-radius:14px;padding:clamp(16px,3vw,26px);margin-bottom:22px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(140px,100%),1fr));gap:12px}
-label{display:block;font-size:14px;color:var(--mute);margin-bottom:4px}
+label{display:block;font-size:15px;color:var(--mute);margin-bottom:4px}
 input,select{width:100%;font:inherit;font-size:16px;padding:10px 12px;min-height:46px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
 input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid color-mix(in srgb,var(--red) 50%,transparent);outline-offset:2px}
 .big input{font:700 26px "Readex Pro",sans-serif;text-align:center}
@@ -82,7 +82,7 @@ th{text-align:start;font-size:13px;color:var(--mute);font-weight:500;border-bott
 td{border-bottom:1px solid var(--line);padding:10px 6px;vertical-align:middle}
 td.num{font:700 17px "Readex Pro",sans-serif;direction:ltr;text-align:right;white-space:nowrap}
 .del{min-height:36px;padding:0 10px;font-size:13px;color:var(--mute)}
-.note{font-size:13px;color:var(--mute)}
+.note{font-size:14px;color:var(--mute)}
 .empty{color:var(--mute);text-align:center;padding:30px 0}
 .ref{display:grid;gap:6px;font-size:14px}.ref div{display:flex;gap:10px;align-items:center}
 .msg{font-size:14px;color:var(--red);min-height:1.4em}
@@ -254,31 +254,31 @@ const ICO={
  clk:'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
  pls:'<svg viewBox="0 0 24 24" width="15" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h5l2-5 4 10 2-5h7"/></svg>',
  nte:'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>'};
-const RCSS=`.rp{font-family:'Tajawal','IBM Plex Sans Arabic',Arial,sans-serif;color:#1d2433;direction:rtl;-webkit-print-color-adjust:exact;print-color-adjust:exact;max-width:760px;margin:0 auto}
+const RCSS=`.rp{font-family:'Tajawal','IBM Plex Sans Arabic',Arial,sans-serif;color:#000;direction:rtl;-webkit-print-color-adjust:exact;print-color-adjust:exact;max-width:760px;margin:0 auto}
 .rp *{box-sizing:border-box}
 .rp-hd{display:flex;align-items:center;justify-content:space-between;gap:16px;border-radius:22px;padding:14px 28px 14px 14px;background:linear-gradient(270deg,#25304f 0%,#223a58 55%,#1f5b68 100%);color:#fff;overflow:hidden}
-.rp-hd h1{margin:0;font:800 34px/1.15 'Tajawal',Arial,sans-serif;color:#fff}
-.rp-hd p{margin:6px 0 0;font:700 19px 'Tajawal',Arial,sans-serif;color:#a8e6e0;direction:ltr;text-align:right}
+.rp-hd h1{margin:0;font:800 40px/1.15 'Tajawal',Arial,sans-serif;color:#fff}
+.rp-hd p{margin:6px 0 0;font:700 22px 'Tajawal',Arial,sans-serif;color:#a8e6e0;direction:ltr;text-align:right}
 .rp-hd img{width:215px;height:auto;display:block}
-.rp-meta{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;margin:16px 0 18px}
+.rp-meta{display:grid;grid-template-columns:1.5fr 1.25fr 1.25fr;gap:12px;margin:16px 0 18px}
 .rp-box{background:#eef4f7;border-radius:12px;padding:8px 14px 10px;display:flex;align-items:flex-end;gap:12px}
-.rp-box .k{font-weight:800;font-size:14px;line-height:1.1;white-space:nowrap}.rp-box .k small{display:block;font-size:10px;font-weight:700}
-.rp-box .v{flex:1;border-bottom:1px solid #8a96a3;text-align:center;font-size:13px;min-height:20px;padding-bottom:1px}
-.rp table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid #c9d3dc;border-radius:12px;overflow:hidden;font-size:12px}
+.rp-box .k{font-weight:800;font-size:18px;line-height:1.1;white-space:nowrap}.rp-box .k small{display:block;font-size:13px;font-weight:700}
+.rp-box .v{flex:1;border-bottom:1.5px solid #5d6873;text-align:center;font-size:18px;font-weight:700;min-height:24px;padding-bottom:1px}
+.rp table{width:100%;border-collapse:separate;border-spacing:0;border:1.5px solid #9fb0bf;border-radius:12px;overflow:hidden;font-size:16px}
 .rp thead{display:table-header-group}.rp tr{page-break-inside:avoid;break-inside:avoid}
-.rp th{font-weight:800;font-size:13px;line-height:1.15;padding:6px 3px;border-inline-start:1px solid #c9d3dc;border-bottom:1px solid #c9d3dc;text-align:center;vertical-align:middle}
-.rp th small{display:block;font-size:9px;font-weight:700}
-.rp th svg{display:block;margin:0 auto 2px}
-.rp td{height:30.5px;padding:2px 4px;border-inline-start:1px solid #c9d3dc;border-top:1px solid #dde4ea;text-align:center;vertical-align:middle}
+.rp th{font-weight:800;font-size:16px;line-height:1.15;padding:7px 3px;border-inline-start:1px solid #9fb0bf;border-bottom:1.5px solid #9fb0bf;text-align:center;vertical-align:middle}
+.rp th small{display:block;font-size:12px;font-weight:700}
+.rp th svg{display:block;margin:0 auto 2px;width:17px;height:17px}
+.rp td{height:38px;padding:2px 4px;border-inline-start:1px solid #9fb0bf;border-top:1px solid #b9c6d1;font-weight:700;text-align:center;vertical-align:middle}
 .rp tr>*:first-child{border-inline-start:0}
-.rp .cd{background:#f1f7f5;color:#1f5b52}.rp th.cd{background:#e3f1ec}
-.rp .ct{background:#f3f4fb;color:#25304f}.rp th.ct{background:#e8eaf7}
+.rp .cd{background:#f1f7f5;color:#000}.rp th.cd{background:#e3f1ec}
+.rp .ct{background:#f3f4fb;color:#000}.rp th.ct{background:#e8eaf7}
 .rp .c1{background:#f1f6fc}.rp th.c1{background:#deebf7;color:#1e4f78}
 .rp .c2{background:#f7f3fc}.rp th.c2{background:#ebe2f6;color:#5b3a86}
 .rp .cp{background:#fdf6f1}.rp th.cp{background:#fae9de;color:#a3351f}
-.rp .cn{background:#fff;font-size:10.5px;line-height:1.25}.rp th.cn{background:#e3f1ec;color:#1f5b52}
-.rp td.b{font-weight:800;font-size:13px}
-.rp .ft{font-size:9px;color:#7a8490;margin-top:8px;text-align:center}
+.rp .cn{background:#fff;font-size:13px;line-height:1.3}.rp th.cn{background:#e3f1ec;color:#1f5b52}
+.rp td.b{font-weight:800;font-size:19px}
+.rp .ft{font-size:12px;color:#444;margin-top:8px;text-align:center}
 @page{size:A4;margin:0}@media print{.rp{padding:10mm 10mm 0;max-width:none}}`;
 function report(){
   const f=$('from').value,t=$('to').value;
