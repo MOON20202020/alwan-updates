@@ -394,8 +394,7 @@ function report(){
   <table><colgroup><col style="width:15%"><col style="width:12%"><col style="width:9%"><col style="width:9%"><col style="width:9%"><col style="width:9%"><col style="width:10%"><col style="width:27%"></colgroup>
   <thead><tr><th class="cd" rowspan="2">${ICO.cal}التاريخ<small>Date</small></th><th class="ct" rowspan="2">${ICO.clk}الوقت<small>Time</small></th><th class="c1" colspan="2">القراءة الأولى<small>First Reading</small></th><th class="c2" colspan="2">القراءة الثانية<small>Second Reading</small></th><th class="cp" rowspan="2">${ICO.pls}النبض<small>Pulse</small></th><th class="cn" rowspan="2">${ICO.nte}ملاحظات<small>Notes</small></th></tr>
   <tr><th class="c1">العلوي<small>Systolic</small></th><th class="c1">السفلي<small>Diastolic</small></th><th class="c2">العلوي<small>Systolic</small></th><th class="c2">السفلي<small>Diastolic</small></th></tr></thead>
-  <tbody>${rows.join('')}</tbody></table>
-  <div class="ft">mmHg · للمتابعة فقط ولا يغني عن استشارة الطبيب</div></div>`;
+  <tbody>${rows.join('')}</tbody></table></div>`;
 }
 
 const loadJS=src=>new Promise((ok,no)=>{const e=document.createElement('script');e.src=src;e.onload=ok;e.onerror=no;document.head.appendChild(e)});
@@ -462,15 +461,37 @@ function pcount(){
   const f=$('from').value,t=$('to').value;
   const n=state.readings.filter(x=>{const d=String(x.t).slice(0,10);return(!f||d>=f)&&(!t||d<=t)}).length;
   $('pcount').textContent=f&&t&&f>t?'تاريخ البداية بعد تاريخ النهاية.':n?`سيُطبع ${n} قراءة.`:'لا توجد قراءات في هذه الفترة — سيُطبع جدول فارغ.';
+  if(SHARE)$('pcount').textContent+=' بعد الضغط اختر «طباعة» من القائمة.';
+  prep();
 }
-const openPrint=()=>{if(!$('from').value&&!$('to').value)preset(30);else pcount();$('pdlg').classList.add('on')};
+/* على الجوال: نجهّز ملف PDF نظيف (بدون رابط وتاريخ المتصفح) ونرسله لنافذة الطباعة */
+const SHARE=window.self===window.top&&matchMedia('(pointer:coarse)').matches&&!!navigator.canShare;
+let pdfFile=null,pdfKey='',prepT=0,prepN=0;
+const pkey=()=>$('from').value+'|'+$('to').value+'|'+state.updated+'|'+state.name;
+const pbtn=()=>$('pform').querySelector('[type=submit]');
+function prep(){
+  if(!SHARE||!$('pdlg').classList.contains('on'))return;
+  const k=pkey();if(k===pdfKey&&pdfFile)return;
+  pdfFile=null;pbtn().disabled=true;pbtn().textContent='جارٍ التجهيز…';
+  clearTimeout(prepT);const my=++prepN;
+  prepT=setTimeout(async()=>{
+    try{const blob=await makePDF(report());if(my!==prepN)return;
+      const file=new File([blob],'تقرير-ضغط-الدم.pdf',{type:'application/pdf'});
+      if(navigator.canShare({files:[file]})){pdfFile=file;pdfKey=k}
+    }catch(e){}
+    if(my===prepN){pbtn().disabled=false;pbtn().textContent='🖨 طباعة'}
+  },250);
+}
+const openPrint=()=>{$('pdlg').classList.add('on');if(!$('from').value&&!$('to').value)preset(30);else pcount()};
 const closePrint=()=>$('pdlg').classList.remove('on');
 $('printBtn').addEventListener('click',openPrint);$('printBtn2').addEventListener('click',openPrint);
 $('chips').addEventListener('click',e=>{const b=e.target.closest('[data-d]');if(b)preset(+b.dataset.d)});
 ['from','to'].forEach(id=>$(id).addEventListener('input',()=>{for(const b of $('chips').children)b.classList.remove('on');pcount()}));
 $('pcancel').addEventListener('click',closePrint);
 $('pdlg').addEventListener('click',e=>{if(e.target.id==='pdlg')closePrint()});
-$('pform').addEventListener('submit',e=>{e.preventDefault();if($('from').value&&$('to').value&&$('from').value>$('to').value)return;closePrint();doPrint()});
+$('pform').addEventListener('submit',e=>{e.preventDefault();if($('from').value&&$('to').value&&$('from').value>$('to').value)return;
+  if(SHARE&&pdfFile&&pdfKey===pkey()){navigator.share({files:[pdfFile]}).then(closePrint).catch(err=>{if(err&&err.name!=='AbortError'){closePrint();doPrint()}});return}
+  closePrint();doPrint()});
 $('addBtn').addEventListener('click',()=>{$('form').scrollIntoView({behavior:'smooth'});setTimeout(()=>$('sys').focus({preventScroll:true}),350)});
 const openWelcome=()=>{$('wimg').src=IMG;$('wname').value=state.name||'';$('welcome').classList.add('on');setTimeout(()=>$('wname').focus(),200)};
 $('wform').addEventListener('submit',e=>{e.preventDefault();const n=$('wname').value.trim();if(!n)return;state.name=n;$('welcome').classList.remove('on');save()});
