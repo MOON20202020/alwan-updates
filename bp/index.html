@@ -99,6 +99,38 @@ td.num{font:700 17px "Readex Pro",sans-serif;direction:ltr;text-align:right;whit
 @media(max-width:600px){table{font-size:13px}.stack td.num{direction:rtl;text-align:start}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack td{display:flow-root;border:0;padding:3px 0;padding-inline-start:7em;text-align:start}.stack td::before{content:attr(data-l);float:inline-start;width:6.5em;margin-inline-start:-7em;color:var(--mute);font:400 13px "IBM Plex Sans Arabic",sans-serif}.stack td:empty{display:none}}
 @media print{.app,.bar,.toast,#welcome,#pdlg{display:none!important}#printArea{display:block}body{background:#fff;color:#000;padding:0!important}}
 @media(prefers-reduced-motion:no-preference){.now{transition:color .3s}}
+/* تكبير واجهة التطبيق للقراءة الواضحة */
+body{font-size:18px}
+h1{font-size:clamp(34px,8vw,46px)}
+h2{font-size:23px}
+.sub,.sub .link{font-size:17px}
+label{font-size:17px;color:var(--ink);opacity:.8;margin-bottom:6px}
+input,select{font-size:19px;min-height:54px}
+.big input{font-size:30px;min-height:64px}
+button{min-height:54px;font-size:18px}
+.note{font-size:16px}
+.badge{font-size:16px;padding:4px 14px}
+.stats b{font-size:26px}.stats span{font-size:15px}
+table{font-size:17px}td.num{font-size:20px}th{font-size:15px}
+.del{min-height:42px;font-size:15px}
+.ref{font-size:16px}
+.empty{font-size:18px}
+summary{font-size:18px}
+.chips button{min-height:46px;font-size:17px}
+.pcount{font-size:16px}
+#welcome h2{font-size:27px}#welcome p{font-size:17px}#welcome input{font-size:21px}
+.toast{font-size:16px}
+@media(max-width:640px){
+ .big input{font-size:28px;padding:10px 2px}
+ .big label{font-size:15px}
+ .bar button{min-height:58px;font-size:19px}
+ #form .row button.pri{width:100%;min-height:60px;font-size:20px}
+ #form .row{flex-direction:column;align-items:stretch}
+ .wrap{padding-bottom:calc(110px + env(safe-area-inset-bottom))}
+ .toast{bottom:calc(96px + env(safe-area-inset-bottom))}
+}
+@media(max-width:600px){table{font-size:16px}.stack td::before{font-size:15px}.stack td.num{font-size:20px}}
+.big label{white-space:normal}
 </style>
 <script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
 </head>
@@ -113,19 +145,19 @@ td.num{font:700 17px "Readex Pro",sans-serif;direction:ltr;text-align:right;whit
   <form class="card" id="form" autocomplete="off">
     <h2>قراءة جديدة</h2>
     <div class="grid big">
-      <div><label for="sys">الانقباضي (العلوي)</label><input id="sys" type="number" inputmode="numeric" min="60" max="260" required placeholder="120"></div>
-      <div><label for="dia">الانبساطي (السفلي)</label><input id="dia" type="number" inputmode="numeric" min="30" max="160" required placeholder="80"></div>
+      <div><label for="sys">الضغط العلوي</label><input id="sys" type="number" inputmode="numeric" min="60" max="260" required placeholder="120"></div>
+      <div><label for="dia">الضغط السفلي</label><input id="dia" type="number" inputmode="numeric" min="30" max="160" required placeholder="80"></div>
       <div><label for="pulse">النبض</label><input id="pulse" type="number" inputmode="numeric" min="30" max="220" placeholder="70"></div>
     </div>
     <details style="margin-top:12px" id="sec"><summary style="cursor:pointer;font-weight:700;min-height:32px">القراءة الثانية (اختياري)</summary>
     <div class="grid big" style="margin-top:8px">
-      <div><label for="sys2">الانقباضي الثاني</label><input id="sys2" type="number" inputmode="numeric" min="60" max="260" placeholder="—"></div>
-      <div><label for="dia2">الانبساطي الثاني</label><input id="dia2" type="number" inputmode="numeric" min="30" max="160" placeholder="—"></div>
+      <div><label for="sys2">العلوي الثاني</label><input id="sys2" type="number" inputmode="numeric" min="60" max="260" placeholder="—"></div>
+      <div><label for="dia2">السفلي الثاني</label><input id="dia2" type="number" inputmode="numeric" min="30" max="160" placeholder="—"></div>
     </div></details>
     <div class="grid" style="margin-top:12px">
       <div><label for="t">التاريخ والوقت</label><input id="t" type="datetime-local" required></div>
       <div><label for="arm">الذراع</label><select id="arm"><option>يسار</option><option>يمين</option></select></div>
-      <div><label for="note">ملاحظة</label><input id="note" type="text" maxlength="80" placeholder="مثلاً: بعد الرياضة"></div>
+      <div style="grid-column:1/-1"><label for="note">ملاحظة</label><input id="note" type="text" maxlength="80" placeholder="مثلاً: بعد الرياضة"></div>
     </div>
     <div class="live" id="live"></div>
     <div class="row"><button class="pri" type="submit">حفظ القراءة</button><span class="msg" id="msg"></span></div>
@@ -150,7 +182,7 @@ td.num{font:700 17px "Readex Pro",sans-serif;direction:ltr;text-align:right;whit
     <p class="note">التصنيف حسب إرشادات جمعية القلب الأمريكية (2017). السجل للمتابعة فقط ولا يغني عن استشارة الطبيب. إذا تجاوزت القراءة ١٨٠/١٢٠ مع ألم في الصدر أو ضيق تنفس أو صداع شديد، اطلب الإسعاف فوراً.</p>
   </section>
 </div>
-<div class="bar"><button type="button" id="addBtn">＋ قراءة جديدة</button><button class="pri" type="button" id="printBtn2">طباعة / PDF</button></div>
+<div class="bar"><button type="button" id="addBtn">＋ قراءة جديدة</button><button class="pri" type="button" id="printBtn2">🖨 طباعة</button></div>
 <div class="toast" id="toast" role="status"></div>
 <div id="welcome" role="dialog" aria-modal="true" aria-labelledby="wh"><form id="wform" autocomplete="on">
   <img id="wimg" alt="">
