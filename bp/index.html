@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#223a58">
+<meta name="theme-color" content="#1f6b75">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -132,6 +132,48 @@ summary{font-size:21px}
 @media(max-width:600px){table{font-size:19px}.stack td{padding-inline-start:6.5em}.stack td::before{font-size:17px;width:6em;margin-inline-start:-6.5em}.stack td.num{font-size:24px}}
 .big label{white-space:normal}
 .grid{align-items:end}
+
+/* ===== التصميم الجديد: بطاقة متابعة بألوان السجل المطبوع ===== */
+:root{--bg:light-dark(#eef3f7,#0d1424);--card:light-dark(#ffffff,#172138);--field:light-dark(#f5f8fb,#0f182b);--ink:light-dark(#14213d,#eef2f8);--mute:light-dark(#3b4863,#c3cbdb);--line:light-dark(#d6dfe9,#2a3854);--red:light-dark(#e0464f,#ff6b72);--navy:#223a58;--teal:light-dark(#1f6b75,#5cc7c9)}
+body,input,select,button,h1,h2,.now,.stats b,td.num,.big input{font-family:"Tajawal","IBM Plex Sans Arabic",-apple-system,sans-serif}
+.top{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;background:linear-gradient(135deg,#1f6b75 0%,#223a58 55%,#25304f 100%);color:#fff;border:0;border-radius:26px;padding:22px 22px 22px 10px;margin-bottom:22px;box-shadow:0 10px 30px rgba(34,58,88,.25);overflow:hidden}
+.top h1{color:#fff;margin-bottom:6px}
+.top .sub{color:#d6eef0}.top .link{color:#9fe3dc;font-weight:700}
+.top .sub .note{color:#b9d8dc}
+.hico{width:clamp(110px,26vw,190px);height:auto;display:block;filter:drop-shadow(0 6px 10px rgba(0,0,0,.25))}
+#printBtn{grid-column:1/-1;justify-self:start;background:#fff;color:#223a58;border:0}
+.card{background:var(--card);border-radius:24px;border:1px solid light-dark(#e3eaf1,#26324d);box-shadow:0 1px 2px rgba(20,33,61,.05),0 10px 28px rgba(20,33,61,.07);padding:clamp(18px,4vw,28px)}
+.card h2{color:var(--ink);display:flex;align-items:center;gap:10px}
+.card h2::before{content:"";width:10px;height:26px;border-radius:6px;background:linear-gradient(180deg,#5cc7c9,#1f6b75);flex:none}
+input,select{background-color:var(--field);border:2px solid var(--line);border-radius:16px}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid color-mix(in srgb,var(--teal) 55%,transparent);outline-offset:2px}
+button{border-radius:16px;background:var(--card);border:2px solid var(--line)}
+.big>div:nth-child(1) label{color:light-dark(#1e4f78,#9cc8f2)}
+.big>div:nth-child(2) label{color:light-dark(#5b3a86,#cdb6f0)}
+.big>div:nth-child(3) label{color:light-dark(#a3351f,#ffb59a)}
+.big>div:nth-child(1) input{background:light-dark(#eaf3fc,#14273f);border-color:light-dark(#b7d2ee,#2d4d74);color:light-dark(#1e4f78,#d6e9fc)}
+.big>div:nth-child(2) input{background:light-dark(#f3edfb,#231b38);border-color:light-dark(#d5c4ee,#4a3a70);color:light-dark(#4f2f7d,#e7dbf9)}
+.big>div:nth-child(3) input{background:light-dark(#fdf1e9,#33211a);border-color:light-dark(#f1cbb4,#6a4232);color:light-dark(#93301c,#ffdccc)}
+.big input{font-weight:800;border-radius:18px}
+.big input::placeholder{font-weight:700}
+summary{color:var(--teal);list-style-position:inside}
+button.pri,#form .row button.pri{background:linear-gradient(135deg,#f06464,#d93a4a);border:0;color:#fff;box-shadow:0 8px 18px rgba(217,58,74,.28)}
+.hero{position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;inset:auto -40px -60px auto;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--teal) 14%,transparent),transparent 70%);pointer-events:none}
+.now{font-weight:800}
+.stats div{border-top:3px solid var(--line)}
+.badge{box-shadow:0 3px 8px rgba(0,0,0,.12)}
+.legend i{height:4px;border-radius:2px}
+.del{border-radius:12px;color:var(--red);border-color:color-mix(in srgb,var(--red) 35%,var(--line))}
+.bar{background:color-mix(in srgb,var(--card) 92%,transparent);border-top:0;box-shadow:0 -8px 24px rgba(20,33,61,.10)}
+#addBtn{background:light-dark(#e6f4f3,#163238);border-color:light-dark(#b7e0dc,#2a5960);color:var(--teal)}
+#printBtn2,#pform button.pri{background:linear-gradient(135deg,#1f6b75,#223a58);box-shadow:0 8px 18px rgba(34,58,88,.3)}
+.chips button.on{background:linear-gradient(135deg,#1f6b75,#223a58);color:#fff;border-color:transparent}
+#pdlg form{background:var(--card)}
+#welcome form{background:var(--card)}
+.toast{background:#223a58;border-radius:14px}
+.stack tr{border-bottom:2px dashed var(--line)}
+@media(max-width:640px){.top{padding:18px 18px 18px 6px;border-radius:22px}}
 body{font-weight:500;-webkit-font-smoothing:antialiased}
 label{font-weight:700;opacity:1}
 input,select{font-weight:600;color:var(--ink);border-width:2px}
@@ -145,15 +187,16 @@ h1,h2{font-weight:700}
 <div class="app wrap">
   <div class="top">
     <div><h1>سجل ضغط الدم</h1><p class="sub" style="margin:0"><span id="hello"></span> <button class="link" type="button" id="editName">تغيير الاسم</button></p></div>
-    <button class="pri" id="printBtn" type="button">🖨 طباعة التقرير</button>
+    <img class="hico" id="himg" alt="">
+    <button id="printBtn" type="button">🖨 طباعة التقرير</button>
   </div>
 
   <div class="warn" id="noStore" hidden>المتصفح لا يسمح بالحفظ هنا، فستضيع القراءات عند إغلاق الصفحة. افتح الرابط في Safari أو Chrome مباشرة.</div>
   <form class="card" id="form" autocomplete="off">
     <h2>قراءة جديدة</h2>
     <div class="grid big">
-      <div><label for="sys">الضغط العلوي</label><input id="sys" type="number" inputmode="numeric" min="60" max="260" required placeholder="120"></div>
-      <div><label for="dia">الضغط السفلي</label><input id="dia" type="number" inputmode="numeric" min="30" max="160" required placeholder="80"></div>
+      <div><label for="sys">العلوي</label><input id="sys" type="number" inputmode="numeric" min="60" max="260" required placeholder="120"></div>
+      <div><label for="dia">السفلي</label><input id="dia" type="number" inputmode="numeric" min="30" max="160" required placeholder="80"></div>
       <div><label for="pulse">النبض</label><input id="pulse" type="number" inputmode="numeric" min="30" max="220" placeholder="70"></div>
     </div>
     <details style="margin-top:12px" id="sec"><summary style="cursor:pointer;font-weight:700;min-height:32px">القراءة الثانية (اختياري)</summary>
@@ -270,13 +313,13 @@ function draw(){
   const W=svg.clientWidth,H=svg.clientHeight;if(!W||!H)return;
   const r=sorted().slice(0,W<520?10:20).reverse();
   if(r.length<2){svg.innerHTML=`<text x="${W/2}" y="${H/2}" text-anchor="middle" fill="var(--mute)" font-size="18">يظهر الرسم بعد قراءتين</text>`;return}
-  const pl=W<520?14:40,pr=54,pt=16,pb=W<520?16:34;
+  const pl=W<520?14:40,pr=48,pt=16,pb=W<520?16:34;
   const vals=r.flatMap(x=>[x.sys,x.dia]),lo=Math.min(60,...vals)-5,hi=Math.max(160,...vals)+5;
   const X=i=>pl+(W-pl-pr)*(r.length-1-i)/(r.length-1); // RTL: newest on the left
   const Y=v=>pt+(H-pt-pb)*(hi-v)/(hi-lo);
   const line=(k,col)=>`<polyline fill="none" stroke="${col}" stroke-width="2.5" stroke-linejoin="round" points="${r.map((x,i)=>X(i)+','+Y(x[k])).join(' ')}"/>`+r.map((x,i)=>`<circle cx="${X(i)}" cy="${Y(x[k])}" r="4" fill="${cat(x.sys,x.dia).c}" stroke="var(--card)" stroke-width="2"/>`).join('');
   let g='';
-  for(const v of [80,120,140])g+=`<line x1="${pl}" x2="${W-pr}" y1="${Y(v)}" y2="${Y(v)}" stroke="${v===140?'#c0142f':'#1f8a4c'}" stroke-opacity=".45" stroke-dasharray="4 4"/><text x="${W-pr+14}" y="${Y(v)+5}" font-size="15" font-weight="600" fill="var(--mute)">${v}</text>`;
+  for(const v of [80,120,140])g+=`<line x1="${pl}" x2="${W-pr}" y1="${Y(v)}" y2="${Y(v)}" stroke="${v===140?'#c0142f':'#1f8a4c'}" stroke-opacity=".45" stroke-dasharray="4 4"/><text x="${W-2}" y="${Y(v)-6}" text-anchor="end" font-size="15" font-weight="700" fill="var(--mute)">${v}</text>`;
   if(W>=520)r.forEach((x,i)=>{if(i%Math.ceil(r.length/7)===0){const d=new Date(x.t);g+=`<text x="${X(i)}" y="${H-10}" text-anchor="middle" font-size="15" font-weight="600" fill="var(--mute)">${d.getDate()}/${d.getMonth()+1}</text>`}});
   svg.innerHTML=g+line('dia','var(--mute)')+line('sys','var(--red)');
 }
@@ -380,6 +423,7 @@ async function doPrint(){
   finally{btns.forEach(b=>b.disabled=false)}
 }
 
+$('himg').src=IMG;
 $('t').value=nowLocal();
 ['sys','dia'].forEach(id=>$(id).addEventListener('input',livePreview));
 $('form').addEventListener('submit',e=>{
