@@ -182,6 +182,16 @@ input::placeholder{color:var(--mute);opacity:.6;font-weight:500}
 h1,h2{font-weight:700}
 </style>
 <script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
+<script>
+/* تحديث تلقائي: يفتح دائماً آخر نسخة من GitHub */
+(function(){try{
+ if(location.hostname!=='raw.githack.com')return;
+ var R='MOON20202020/alwan-updates',m=location.pathname.split('/'),cur=m[3]||'';
+ fetch('https://api.github.com/repos/'+R+'/commits/main',{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(j){
+  if(j&&j.sha&&j.sha!==cur){location.replace('https://raw.githack.com/'+R+'/'+j.sha+'/bp/index.html')}
+ }).catch(function(){});
+}catch(e){}})();
+</script>
 </head>
 <body>
 <div class="app wrap">
