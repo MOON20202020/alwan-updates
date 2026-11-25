@@ -315,7 +315,9 @@ function render(){
 
   $('ref').innerHTML=CATS.map(c=>`<div>${badge(c)}<span>${c.d}</span></div>`).join('');
   $('hello').textContent=state.name?'أهلاً، '+state.name:'';
-  $('noStore').hidden=canStore;
+  const inApp=/FBAN|FBAV|Instagram|Snapchat|Line\/|TikTok|musical_ly|GSA\//.test(navigator.userAgent);
+  $('noStore').hidden=canStore&&!inApp;
+  if(inApp)$('noStore').textContent='أنت فاتح الرابط من داخل تطبيق آخر، وقد لا تُحفظ قراءاتك واسمك. اضغط ⋯ واختر «فتح في Safari»، ثم أضفه للشاشة الرئيسية.';
   draw();
 }
 
@@ -504,6 +506,7 @@ $('wform').addEventListener('submit',e=>{e.preventDefault();const n=$('wname').v
 $('editName').addEventListener('click',openWelcome);
 if(!state.name)openWelcome();
 render();
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
 if(window.claude&&claude.use){
   claude.use('downloads').then(d=>{dl=d}).catch(()=>{});
 }
