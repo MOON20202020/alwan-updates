@@ -377,7 +377,7 @@ const RCSS=`.rp{font-family:'Tajawal','IBM Plex Sans Arabic',Arial,sans-serif;co
 .pdfbox .rp-meta,.rp.pg .rp-meta{margin:18px 0}
 .pdfbox .rp table,.rp.pg table{flex:1 1 auto}
 @page{size:A4;margin:0}
-@media print{html,body{height:auto!important;margin:0!important}.rp{max-width:none;width:210mm;min-height:296.5mm;margin:0;padding:0 5.5mm 5.5mm;display:flex;flex-direction:column}.rp-hd{border-radius:0;margin:0 -5.5mm;padding:7mm 10mm 7mm 5.5mm}.rp-meta{margin:4.5mm 0}.rp table{flex:1 1 auto}}`;
+@media print{html,body{height:auto!important;margin:0!important}.rp{max-width:none;width:100%;height:auto;break-inside:avoid;margin:0;padding:0 5.5mm 5.5mm;display:flex;flex-direction:column}.rp-hd{border-radius:0;margin:0 -5.5mm;padding:7mm 10mm 7mm 5.5mm}.rp-meta{margin:4.5mm 0}.rp table{flex:none}.rp td{height:33px}}`;
 function report(){
   const f=$('from').value,t=$('to').value;
   const day=x=>String(x.t).slice(0,10);
@@ -415,8 +415,9 @@ async function makePDF(body){
     const cv=await html2canvas(box,{scale:2,backgroundColor:'#fff',useCORS:true,logging:false});
     const pdf=new jspdf.jsPDF({unit:'mm',format:'a4'});
     const pw=210,ph=297,ih=cv.height*pw/cv.width;
-    if(ih<=ph){pdf.addImage(cv,'JPEG',0,0,pw,ih,undefined,'FAST')}
-    else{const sliceH=Math.floor(cv.width*ph/pw);for(let y=0,p=0;y<cv.height;y+=sliceH,p++){const c=document.createElement('canvas');c.width=cv.width;c.height=Math.min(sliceH,cv.height-y);c.getContext('2d').drawImage(cv,0,-y);if(p)pdf.addPage();pdf.addImage(c,'JPEG',0,0,pw,c.height*pw/cv.width,undefined,'FAST')}}
+    // صفحة واحدة دائماً: إذا كان التقرير أطول نصغّره ليناسب الصفحة
+    if(ih<=ph*1.02){pdf.addImage(cv,'JPEG',0,0,pw,ph,undefined,'FAST')}
+    else{const w=pw*ph/ih;pdf.addImage(cv,'JPEG',(pw-w)/2,0,w,ph,undefined,'FAST')}
     return pdf.output('blob');
   }finally{box.remove()}
 }
