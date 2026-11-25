@@ -237,6 +237,17 @@ h1,h2{font-weight:700}
     <div id="tableBox"></div>
   </section>
 
+  <section class="card" id="bk">
+    <h2>الحفظ الدائم</h2>
+    <p class="note" id="bkState" style="margin:0 0 6px"></p>
+    <p class="note" style="margin:0 0 14px">خذ نسخة احتياطية في «الملفات» بين فترة وفترة. إذا انمسحت بيانات المتصفح أو غيّرت جوالك، تسترجع منها كل قراءاتك واسمك.</p>
+    <div class="row" style="margin:0">
+      <button type="button" id="bkSave" class="pri" style="flex:1 1 220px">💾 حفظ نسخة احتياطية</button>
+      <button type="button" id="bkLoad" style="flex:1 1 220px">📂 استرجاع من نسخة</button>
+      <input type="file" id="bkFile" accept=".json,application/json,text/plain" hidden>
+    </div>
+  </section>
+
   <section class="card">
     <h2>التصنيف</h2>
     <div class="ref" id="ref"></div>
@@ -251,6 +262,7 @@ h1,h2{font-weight:700}
   <p>اكتب اسمك مرة واحدة ليظهر في تقريرك المطبوع. قراءاتك تُحفظ على جهازك فقط ولا يراها غيرك.</p>
   <input id="wname" type="text" name="name" autocomplete="name" maxlength="60" required placeholder="الاسم الكامل">
   <button class="pri" type="submit">ابدأ</button>
+  <button type="button" class="link" id="wRestore" style="margin-top:12px;width:100%;min-height:44px">عندك نسخة احتياطية؟ استرجعها</button>
 </form></div>
 <div id="pdlg" role="dialog" aria-modal="true" aria-labelledby="pdh"><form id="pform">
   <h2 id="pdh">طباعة التقرير</h2>
@@ -317,6 +329,7 @@ function render(){
   $('hello').textContent=state.name?'أهلاً، '+state.name:'';
   const inApp=/FBAN|FBAV|Instagram|Snapchat|Line\/|TikTok|musical_ly|GSA\//.test(navigator.userAgent);
   $('noStore').hidden=canStore&&!inApp;
+  if(typeof bkState==='function')bkState();
   if(inApp)$('noStore').textContent='أنت فاتح الرابط من داخل تطبيق آخر، وقد لا تُحفظ قراءاتك واسمك. اضغط ⋯ واختر «فتح في Safari»، ثم أضفه للشاشة الرئيسية.';
   draw();
 }
@@ -442,6 +455,50 @@ async function doPrint(){
 }
 
 $('himg').src=IMG;
+/* ===== الحفظ الدائم والنسخ الاحتياطي ===== */
+const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+let persisted=false;
+try{navigator.storage&&navigator.storage.persisted&&navigator.storage.persisted().then(p=>{persisted=p;bkState()})}catch(e){}
+function bkState(){
+  const last=state.backupAt?new Date(state.backupAt):null;
+  const days=last?Math.floor((Date.now()-last)/864e5):null;
+  const parts=[];
+  parts.push(standalone||persisted?'✅ الحفظ الدائم مفعّل على هذا الجهاز.':'⚠️ للحفظ الدائم أضف التطبيق للشاشة الرئيسية: زر المشاركة ← «إضافة إلى الشاشة الرئيسية».');
+  parts.push(last?`آخر نسخة احتياطية: ${last.toLocaleDateString('ar-OM-u-nu-latn',{day:'numeric',month:'long',year:'numeric'})}${days>=7?' — حان وقت نسخة جديدة':''}`:'لم تُحفظ نسخة احتياطية بعد.');
+  $('bkState').innerHTML=parts.map(esc).join('<br>');
+}
+async function bkSave(){
+  const d=new Date(),stamp=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const data=JSON.stringify({app:'bp-log',v:1,savedAt:d.toISOString(),name:state.name,readings:state.readings},null,1);
+  const fname=`سجل-ضغط-الدم-${stamp}.json`;
+  const file=new File([data],fname,{type:'application/json'});
+  let ok=false;
+  try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file]});ok=true}}
+  catch(e){if(e&&e.name==='AbortError')return}
+  if(!ok){try{const a=document.createElement('a');a.href=URL.createObjectURL(file);a.download=fname;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000);ok=true}catch(e){}}
+  if(ok){state.backupAt=Date.now();save();note('تم — احفظ الملف في «الملفات» (Files).')}
+}
+function bkLoad(file){
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const d=JSON.parse(r.result);
+      if(!d||!Array.isArray(d.readings))throw 0;
+      const have=new Set(state.readings.map(x=>x.id));
+      const clean=d.readings.filter(x=>x&&x.id&&x.t&&+x.sys&&+x.dia&&!have.has(String(x.id))).map(x=>({id:String(x.id),t:String(x.t).slice(0,16),sys:+x.sys,dia:+x.dia,sys2:+x.sys2||null,dia2:+x.dia2||null,pulse:+x.pulse||null,arm:String(x.arm||'').slice(0,10),note:String(x.note||'').slice(0,120)}));
+      state.readings=state.readings.concat(clean);
+      if(!state.name&&d.name)state.name=String(d.name).slice(0,60);
+      $('welcome').classList.remove('on');save();
+      note(`تم استرجاع ${clean.length} قراءة.`);
+    }catch(e){note('الملف غير صالح — اختر ملف النسخة الاحتياطية (.json).')}
+  };
+  r.readAsText(file);
+}
+$('bkSave').addEventListener('click',bkSave);
+$('wRestore').addEventListener('click',()=>$('bkFile').click());
+$('bkLoad').addEventListener('click',()=>$('bkFile').click());
+$('bkFile').addEventListener('change',e=>{const f=e.target.files[0];if(f)bkLoad(f);e.target.value=''});
+
 $('t').value=nowLocal();
 ['sys','dia'].forEach(id=>$(id).addEventListener('input',livePreview));
 $('form').addEventListener('submit',e=>{
