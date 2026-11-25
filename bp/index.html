@@ -32,6 +32,16 @@ input::-webkit-date-and-time-value{text-align:start}
 .bar{display:none}
 .link{min-height:32px;padding:0 4px;border:0;background:none;color:var(--red);font-weight:500;font-size:14px;text-decoration:underline}
 .warn{background:#fff4d6;color:#5a4300;border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:14px}
+#pdlg{position:fixed;inset:0;z-index:15;display:none;align-items:flex-end;justify-content:center;background:rgba(10,14,25,.45)}
+#pdlg.on{display:flex}
+#pdlg form{width:min(480px,100%);background:var(--bg);border-radius:20px 20px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom))}
+@media(min-width:601px){#pdlg{align-items:center}#pdlg form{border-radius:20px}}
+#pdlg h2{margin:0 0 4px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.chips button{min-height:40px;padding:0 14px;font-weight:500;font-size:15px;border-radius:99px}
+.chips button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.pcount{font-size:14px;color:var(--mute);margin:10px 0 14px;min-height:1.4em}
+.pact{display:grid;grid-template-columns:1fr 2fr;gap:10px}
 #welcome{position:fixed;inset:0;z-index:20;display:none;place-items:center;padding:24px;padding-top:max(24px,env(safe-area-inset-top));background:linear-gradient(160deg,#1f5b68,#25304f)}
 #welcome.on{display:grid}
 #welcome form{width:min(420px,100%);background:var(--bg);border-radius:20px;padding:26px 22px;text-align:center}
@@ -87,7 +97,7 @@ td.num{font:700 17px "Readex Pro",sans-serif;direction:ltr;text-align:right;whit
  .card{border-radius:12px}
  .now{text-align:center}.hero>div:first-child{text-align:center}}
 @media(max-width:600px){table{font-size:13px}.stack td.num{direction:rtl;text-align:start}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack td{display:flow-root;border:0;padding:3px 0;padding-inline-start:7em;text-align:start}.stack td::before{content:attr(data-l);float:inline-start;width:6.5em;margin-inline-start:-7em;color:var(--mute);font:400 13px "IBM Plex Sans Arabic",sans-serif}.stack td:empty{display:none}}
-@media print{.app,.bar,.toast,#welcome{display:none!important}#printArea{display:block}body{background:#fff;color:#000;padding:0!important}}
+@media print{.app,.bar,.toast,#welcome,#pdlg{display:none!important}#printArea{display:block}body{background:#fff;color:#000;padding:0!important}}
 @media(prefers-reduced-motion:no-preference){.now{transition:color .3s}}
 </style>
 <script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
@@ -135,12 +145,8 @@ td.num{font:700 17px "Readex Pro",sans-serif;direction:ltr;text-align:right;whit
   </section>
 
   <section class="card">
-    <h2>بيانات التقرير والتصنيف</h2><p class="note" style="margin-top:-8px">اترك التاريخين فارغين لطباعة كل القراءات.</p>
-    <div class="grid">
-            <div><label for="from">الفترة من</label><input id="from" type="date"></div>
-      <div><label for="to">إلى</label><input id="to" type="date"></div>
-    </div>
-    <div class="ref" id="ref" style="margin-top:18px"></div>
+    <h2>التصنيف</h2>
+    <div class="ref" id="ref"></div>
     <p class="note">التصنيف حسب إرشادات جمعية القلب الأمريكية (2017). السجل للمتابعة فقط ولا يغني عن استشارة الطبيب. إذا تجاوزت القراءة ١٨٠/١٢٠ مع ألم في الصدر أو ضيق تنفس أو صداع شديد، اطلب الإسعاف فوراً.</p>
   </section>
 </div>
@@ -152,6 +158,17 @@ td.num{font:700 17px "Readex Pro",sans-serif;direction:ltr;text-align:right;whit
   <p>اكتب اسمك مرة واحدة ليظهر في تقريرك المطبوع. قراءاتك تُحفظ على جهازك فقط ولا يراها غيرك.</p>
   <input id="wname" type="text" name="name" autocomplete="name" maxlength="60" required placeholder="الاسم الكامل">
   <button class="pri" type="submit">ابدأ</button>
+</form></div>
+<div id="pdlg" role="dialog" aria-modal="true" aria-labelledby="pdh"><form id="pform">
+  <h2 id="pdh">طباعة التقرير</h2>
+  <p class="note" style="margin:0">اختر الفترة اللي تبي تطبعها.</p>
+  <div class="chips" id="chips"><button type="button" data-d="7">آخر ٧ أيام</button><button type="button" data-d="14">آخر ١٤ يوماً</button><button type="button" data-d="30">آخر شهر</button><button type="button" data-d="0">كل القراءات</button></div>
+  <div class="grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+    <div><label for="from">من تاريخ</label><input id="from" type="date"></div>
+    <div><label for="to">إلى تاريخ</label><input id="to" type="date"></div>
+  </div>
+  <div class="pcount" id="pcount"></div>
+  <div class="pact"><button type="button" id="pcancel">إلغاء</button><button class="pri" type="submit">🖨 طباعة</button></div>
 </form></div>
 <div id="printArea"></div>
 
@@ -339,7 +356,27 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('[data-del]');
   if(b){state.readings=state.readings.filter(x=>x.id!==b.dataset.del);save()}
 });
-$('printBtn').addEventListener('click',doPrint);$('printBtn2').addEventListener('click',doPrint);
+const iso=d=>{const x=new Date(d);x.setMinutes(x.getMinutes()-x.getTimezoneOffset());return x.toISOString().slice(0,10)};
+function preset(n){
+  const days=state.readings.map(x=>String(x.t).slice(0,10)).sort();
+  if(!n){$('from').value=days[0]||'';$('to').value=days[days.length-1]||''}
+  else{$('to').value=iso(Date.now());$('from').value=iso(Date.now()-(n-1)*864e5)}
+  for(const b of $('chips').children)b.classList.toggle('on',+b.dataset.d===n);
+  pcount();
+}
+function pcount(){
+  const f=$('from').value,t=$('to').value;
+  const n=state.readings.filter(x=>{const d=String(x.t).slice(0,10);return(!f||d>=f)&&(!t||d<=t)}).length;
+  $('pcount').textContent=f&&t&&f>t?'تاريخ البداية بعد تاريخ النهاية.':n?`سيُطبع ${n} قراءة.`:'لا توجد قراءات في هذه الفترة — سيُطبع جدول فارغ.';
+}
+const openPrint=()=>{if(!$('from').value&&!$('to').value)preset(30);else pcount();$('pdlg').classList.add('on')};
+const closePrint=()=>$('pdlg').classList.remove('on');
+$('printBtn').addEventListener('click',openPrint);$('printBtn2').addEventListener('click',openPrint);
+$('chips').addEventListener('click',e=>{const b=e.target.closest('[data-d]');if(b)preset(+b.dataset.d)});
+['from','to'].forEach(id=>$(id).addEventListener('input',()=>{for(const b of $('chips').children)b.classList.remove('on');pcount()}));
+$('pcancel').addEventListener('click',closePrint);
+$('pdlg').addEventListener('click',e=>{if(e.target.id==='pdlg')closePrint()});
+$('pform').addEventListener('submit',e=>{e.preventDefault();if($('from').value&&$('to').value&&$('from').value>$('to').value)return;closePrint();doPrint()});
 $('addBtn').addEventListener('click',()=>{$('form').scrollIntoView({behavior:'smooth'});setTimeout(()=>$('sys').focus({preventScroll:true}),350)});
 const openWelcome=()=>{$('wimg').src=IMG;$('wname').value=state.name||'';$('welcome').classList.add('on');setTimeout(()=>$('wname').focus(),200)};
 $('wform').addEventListener('submit',e=>{e.preventDefault();const n=$('wname').value.trim();if(!n)return;state.name=n;$('welcome').classList.remove('on');save()});
