@@ -20,7 +20,7 @@
    PICTURE: القراءة الحالية كبيرة بلون فئتها + رسم الاتجاه
    COLOUR and TYPE: أبيض، حبر داكن، أحمر دموي للتمييز؛ IBM Plex Sans Arabic + Readex Pro للأرقام
    LAYOUT: عمود واحد، نموذج الإدخال أولاً ثم الملخص والرسم ثم الجدول */
-:root{color-scheme:light dark;--bg:light-dark(#fff,#111214);--card:light-dark(#f6f5f4,#1b1c1f);--ink:light-dark(#18181b,#ececec);--mute:light-dark(#62646b,#a2a4aa);--line:light-dark(#e3e1df,#2c2d31);--red:light-dark(#b3122e,#ff5a6e);--n:#1f8a4c;--e:#b88a00;--s1:#d0620d;--s2:#c0142f;--cr:#7a0019}
+:root{color-scheme:light dark;--bg:light-dark(#fff,#111214);--card:light-dark(#f6f5f4,#1b1c1f);--ink:light-dark(#18181b,#ececec);--mute:light-dark(#3a3c42,#cfd1d6);--line:light-dark(#e3e1df,#2c2d31);--red:light-dark(#b3122e,#ff5a6e);--n:#1f8a4c;--e:#b88a00;--s1:#d0620d;--s2:#c0142f;--cr:#7a0019}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "IBM Plex Sans Arabic",-apple-system,system-ui,sans-serif;overflow-x:clip;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
@@ -75,7 +75,7 @@ button.pri{background:var(--red);border-color:var(--red);color:#fff}
 .stats b{display:block;font:700 22px "Readex Pro",sans-serif;direction:ltr;text-align:right;white-space:nowrap}
 .stats span{font-size:13px;color:var(--mute)}
 .fig{position:relative;min-height:240px}.fig>svg{position:absolute;inset:0;width:100%;height:100%}
-.legend{display:flex;gap:16px;font-size:13px;color:var(--mute);margin-top:6px;flex-wrap:wrap}
+.legend{display:flex;gap:16px;font-size:17px;color:var(--mute);margin-top:6px;flex-wrap:wrap}
 .legend i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-inline-end:6px}
 table{width:100%;border-collapse:collapse;font-size:15px}
 th{text-align:start;font-size:13px;color:var(--mute);font-weight:500;border-bottom:2px solid var(--line);padding:8px 6px}
@@ -100,37 +100,44 @@ td.num{font:700 17px "Readex Pro",sans-serif;direction:ltr;text-align:right;whit
 @media print{.app,.bar,.toast,#welcome,#pdlg{display:none!important}#printArea{display:block}body{background:#fff;color:#000;padding:0!important}}
 @media(prefers-reduced-motion:no-preference){.now{transition:color .3s}}
 /* تكبير واجهة التطبيق للقراءة الواضحة */
-body{font-size:18px}
-h1{font-size:clamp(34px,8vw,46px)}
-h2{font-size:23px}
-.sub,.sub .link{font-size:17px}
-label{font-size:17px;color:var(--ink);opacity:.8;margin-bottom:6px}
-input,select{font-size:19px;min-height:54px}
-.big input{font-size:30px;min-height:64px}
-button{min-height:54px;font-size:18px}
-.note{font-size:16px}
-.badge{font-size:16px;padding:4px 14px}
-.stats b{font-size:26px}.stats span{font-size:15px}
-table{font-size:17px}td.num{font-size:20px}th{font-size:15px}
-.del{min-height:42px;font-size:15px}
-.ref{font-size:16px}
-.empty{font-size:18px}
-summary{font-size:18px}
-.chips button{min-height:46px;font-size:17px}
-.pcount{font-size:16px}
-#welcome h2{font-size:27px}#welcome p{font-size:17px}#welcome input{font-size:21px}
-.toast{font-size:16px}
+body{font-size:21px}
+h1{font-size:clamp(40px,10vw,54px)}
+h2{font-size:27px}
+.sub,.sub .link{font-size:20px}
+label{font-size:20px;color:var(--ink);opacity:.85;margin-bottom:6px;font-weight:500}
+input,select{font-size:22px;min-height:62px}
+.big input{font-size:36px;min-height:74px}
+button{min-height:60px;font-size:21px}
+.note{font-size:18px}
+.badge{font-size:18px;padding:5px 16px}
+.stats b{font-size:30px}.stats span{font-size:17px}
+table{font-size:19px}td.num{font-size:24px}th{font-size:17px}
+.del{min-height:46px;font-size:17px}
+.ref{font-size:18px}
+.empty{font-size:21px}
+summary{font-size:21px}
+.chips button{min-height:52px;font-size:19px}
+.pcount{font-size:18px}
+#welcome h2{font-size:30px}#welcome p{font-size:19px}#welcome input{font-size:24px}
+.toast{font-size:18px}
 @media(max-width:640px){
- .big input{font-size:28px;padding:10px 2px}
- .big label{font-size:15px}
- .bar button{min-height:58px;font-size:19px}
- #form .row button.pri{width:100%;min-height:60px;font-size:20px}
+ .big input{font-size:34px;padding:10px 2px;min-height:76px}
+ .big label{font-size:18px}
+ .bar button{min-height:64px;font-size:22px}
+ #form .row button.pri{width:100%;min-height:66px;font-size:23px}
  #form .row{flex-direction:column;align-items:stretch}
- .wrap{padding-bottom:calc(110px + env(safe-area-inset-bottom))}
- .toast{bottom:calc(96px + env(safe-area-inset-bottom))}
+ .wrap{padding-bottom:calc(120px + env(safe-area-inset-bottom))}
+ .toast{bottom:calc(104px + env(safe-area-inset-bottom))}
 }
-@media(max-width:600px){table{font-size:16px}.stack td::before{font-size:15px}.stack td.num{font-size:20px}}
+@media(max-width:600px){table{font-size:19px}.stack td{padding-inline-start:6.5em}.stack td::before{font-size:17px;width:6em;margin-inline-start:-6.5em}.stack td.num{font-size:24px}}
 .big label{white-space:normal}
+.grid{align-items:end}
+body{font-weight:500;-webkit-font-smoothing:antialiased}
+label{font-weight:700;opacity:1}
+input,select{font-weight:600;color:var(--ink);border-width:2px}
+input::placeholder{color:var(--mute);opacity:.6;font-weight:500}
+.note,.stats span,.ref span{font-weight:500}
+h1,h2{font-weight:700}
 </style>
 <script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
 </head>
@@ -155,8 +162,8 @@ summary{font-size:18px}
       <div><label for="dia2">السفلي الثاني</label><input id="dia2" type="number" inputmode="numeric" min="30" max="160" placeholder="—"></div>
     </div></details>
     <div class="grid" style="margin-top:12px">
-      <div><label for="t">التاريخ والوقت</label><input id="t" type="datetime-local" required></div>
-      <div><label for="arm">الذراع</label><select id="arm"><option>يسار</option><option>يمين</option></select></div>
+      <div style="grid-column:1/-1"><label for="t">التاريخ والوقت</label><input id="t" type="datetime-local" required></div>
+      <div style="grid-column:1/-1"><label for="arm">الذراع</label><select id="arm"><option>يسار</option><option>يمين</option></select></div>
       <div style="grid-column:1/-1"><label for="note">ملاحظة</label><input id="note" type="text" maxlength="80" placeholder="مثلاً: بعد الرياضة"></div>
     </div>
     <div class="live" id="live"></div>
@@ -182,7 +189,7 @@ summary{font-size:18px}
     <p class="note">التصنيف حسب إرشادات جمعية القلب الأمريكية (2017). السجل للمتابعة فقط ولا يغني عن استشارة الطبيب. إذا تجاوزت القراءة ١٨٠/١٢٠ مع ألم في الصدر أو ضيق تنفس أو صداع شديد، اطلب الإسعاف فوراً.</p>
   </section>
 </div>
-<div class="bar"><button type="button" id="addBtn">＋ قراءة جديدة</button><button class="pri" type="button" id="printBtn2">🖨 طباعة</button></div>
+<div class="bar"><button type="button" id="addBtn">＋ قراءة</button><button class="pri" type="button" id="printBtn2">🖨 طباعة</button></div>
 <div class="toast" id="toast" role="status"></div>
 <div id="welcome" role="dialog" aria-modal="true" aria-labelledby="wh"><form id="wform" autocomplete="on">
   <img id="wimg" alt="">
@@ -246,7 +253,7 @@ function render(){
       <div class="now" style="color:${c.c}">${last.sys}/${last.dia} <small>mmHg</small></div>
       <div style="margin-top:8px">${badge(c)}</div></div>
       <div><div class="note">متوسط آخر ٧ أيام (${wk.length} قراءة)</div>
-      <div class="stats"><div><b>${a7s??'—'}/${a7d??'—'}</b><span>الضغط</span></div><div><b>${ap??'—'}</b><span>النبض</span></div><div><b>${r.length}</b><span>إجمالي القراءات</span></div></div>
+      <div class="stats"><div><b>${a7s??'—'}/${a7d??'—'}</b><span>الضغط</span></div><div><b>${ap??'—'}</b><span>النبض</span></div><div><b>${r.length}</b><span>القراءات</span></div></div>
       ${a7s?`<div style="margin-top:12px">${badge(cat(a7s,a7d))} <span class="note">تصنيف المتوسط</span></div>`:''}</div>`;
   }
   // table
@@ -262,15 +269,15 @@ const svg=$('chart');
 function draw(){
   const W=svg.clientWidth,H=svg.clientHeight;if(!W||!H)return;
   const r=sorted().slice(0,W<520?10:20).reverse();
-  if(r.length<2){svg.innerHTML=`<text x="${W/2}" y="${H/2}" text-anchor="middle" fill="var(--mute)" font-size="14">يظهر الرسم بعد قراءتين</text>`;return}
-  const pl=W<520?10:40,pr=36,pt=16,pb=W<520?16:34;
+  if(r.length<2){svg.innerHTML=`<text x="${W/2}" y="${H/2}" text-anchor="middle" fill="var(--mute)" font-size="18">يظهر الرسم بعد قراءتين</text>`;return}
+  const pl=W<520?14:40,pr=54,pt=16,pb=W<520?16:34;
   const vals=r.flatMap(x=>[x.sys,x.dia]),lo=Math.min(60,...vals)-5,hi=Math.max(160,...vals)+5;
   const X=i=>pl+(W-pl-pr)*(r.length-1-i)/(r.length-1); // RTL: newest on the left
   const Y=v=>pt+(H-pt-pb)*(hi-v)/(hi-lo);
   const line=(k,col)=>`<polyline fill="none" stroke="${col}" stroke-width="2.5" stroke-linejoin="round" points="${r.map((x,i)=>X(i)+','+Y(x[k])).join(' ')}"/>`+r.map((x,i)=>`<circle cx="${X(i)}" cy="${Y(x[k])}" r="4" fill="${cat(x.sys,x.dia).c}" stroke="var(--card)" stroke-width="2"/>`).join('');
   let g='';
-  for(const v of [80,120,140])g+=`<line x1="${pl}" x2="${W-pr}" y1="${Y(v)}" y2="${Y(v)}" stroke="${v===140?'#c0142f':'#1f8a4c'}" stroke-opacity=".45" stroke-dasharray="4 4"/><text x="${W-pr+6}" y="${Y(v)+4}" font-size="12" fill="var(--mute)">${v}</text>`;
-  if(W>=520)r.forEach((x,i)=>{if(i%Math.ceil(r.length/7)===0){const d=new Date(x.t);g+=`<text x="${X(i)}" y="${H-10}" text-anchor="middle" font-size="12" fill="var(--mute)">${d.getDate()}/${d.getMonth()+1}</text>`}});
+  for(const v of [80,120,140])g+=`<line x1="${pl}" x2="${W-pr}" y1="${Y(v)}" y2="${Y(v)}" stroke="${v===140?'#c0142f':'#1f8a4c'}" stroke-opacity=".45" stroke-dasharray="4 4"/><text x="${W-pr+14}" y="${Y(v)+5}" font-size="15" font-weight="600" fill="var(--mute)">${v}</text>`;
+  if(W>=520)r.forEach((x,i)=>{if(i%Math.ceil(r.length/7)===0){const d=new Date(x.t);g+=`<text x="${X(i)}" y="${H-10}" text-anchor="middle" font-size="15" font-weight="600" fill="var(--mute)">${d.getDate()}/${d.getMonth()+1}</text>`}});
   svg.innerHTML=g+line('dia','var(--mute)')+line('sys','var(--red)');
 }
 const ro=new ResizeObserver(draw);ro.observe(svg);
